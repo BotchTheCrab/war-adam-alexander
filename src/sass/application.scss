@@ -1,0 +1,299 @@
+/** War Card Game - Sass Root **/
+
+@import "flex";
+
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One');
+
+/* 
+	donpark / scalable-css-playing-cards
+	https://github.com/donpark/scalable-css-playing-cards
+*/
+@import "../scalable-css-playing-cards-master/dist/playingcards";
+.card { 
+	color: #000; 
+	float: none;
+}
+
+
+body {
+	background-color: #005C1A;
+	color: #eee;
+	font-family: 'Suit-Regular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: 'Black Ops One', 'Arial Black', sans-serif;
+	text-align: center;
+}
+
+%text-shadow {
+	text-shadow: 0.1rem 0.1rem 0.1rem #333;
+}
+
+h1, h2, h3 {
+	font-family: 'Black Ops One', 'Arial Black', sans-serif;
+	font-weight: normal;
+	margin: 0 auto 0.6em;
+	@extend %text-shadow;
+}
+h1 { font-size: 3rem; margin-bottom: 3rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.2rem; }
+
+button {
+	padding: 0.75em 2.5em;
+	
+	background-color: #09919A;
+	border: none;
+	border-radius: 4px;
+	box-shadow: 1px 1px 1px #333;
+	
+	font-size: 1.25rem;
+	font-weight: normal;
+	font-family: inherit;
+	color: #fff;
+	transition: all ease-out 0.2s;
+	@extend %text-shadow;
+	
+	&:hover {
+		background-color: #0BB5C1;
+	}
+	
+	&[disabled="disabled"] {
+		background-color: #999;
+		color: #aaa;
+		&:hover { 
+			background-color: #999;
+		}
+	}
+	
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+section {
+	clear: both;
+}
+
+.instructions {
+	font-size: 1.25rem;
+	@extend %text-shadow;
+}
+
+
+#playerCountOptions {
+	@include flexbox;
+	@include flex-flow(row wrap);
+	@include justify-content(center);
+
+	button {
+		padding: 0.5em 1em;
+		margin: 1rem 1rem;
+		font-size: 1.75rem;
+	}
+	
+	@media (min-width: 501px) and (max-width: 600px) {
+		button {
+			margin: 1rem 2.5rem;
+		}
+	}
+	
+	@media (max-width: 500px) {
+		button {
+			margin: 1rem 1.5rem;
+		}
+	}
+}
+
+#theater {
+	@include flexbox;
+	@include flex-flow(column nowrap);
+	@include justify-content(space-between);
+	
+	max-width: 1600px;
+	margin: 0 auto;
+	
+	#battlefield {
+		@include flexbox;
+		@include flex-flow(row nowrap);
+		@include justify-content(space-around);
+		//margin-bottom: 10rem;
+		
+		@media (max-width: 50rem) {
+			@include flex-flow(row wrap);
+		}
+		
+		.regiment {
+			position: relative;
+			border: 0.4rem solid #007A23;
+			padding: 1rem;
+			min-height: 10rem;
+			
+			header {
+				font-weight: bold;
+			}
+			
+			.status {
+				position: absolute;
+				left: 0;
+				right: 0;
+				margin-top: -3rem;
+				@extend %text-shadow;
+				
+				.winner { color: yellow; font-size: 1.25rem; }
+			}
+			
+			.card-container {
+				position: relative;
+			}
+			
+			.card {
+				font-size: 4pt;
+				margin: 0;
+				
+				&:nth-of-type(n+2) { position: absolute; }
+				
+				@for $i from 2 through 26 {
+					&:nth-of-type(#{$i}) { top: 1.5rem * ($i - 1); }
+				}
+				
+				// CARD ROTATION
+				
+				// // generic transform
+				// @mixin transform($transforms) {
+					// -moz-transform: $transforms;
+					// -o-transform: $transforms;
+					// -ms-transform: $transforms;
+					// -webkit-transform: $transforms;
+					// transform: $transforms;
+				// }
+				// // rotate
+				// @mixin rotate ($deg) {
+				  // @include transform(rotate(#{$deg}deg));
+				// }
+				
+				// $i: 0;
+				// @each $suit in spade, club, heart, diamond {
+					// @each $faceValue in two, three, four, five, six, seven, eight, nine, ten, jack, queen, king, ace {
+						// $i: $i + 1;
+						// &[suit="#{$suit}"][face="#{$faceValue}"] {
+							// @include rotate((($i % 10) - 4) / 2);
+						// }
+					// }
+				// }
+				
+			}
+			
+			@media (max-width: 50rem) {
+				margin: 0 1rem 7rem;
+			}
+			
+		}
+	}
+
+	#hands {
+		margin-top: 10rem;
+		
+		@include flexbox;
+		@include flex-flow(row nowrap);
+		@include justify-content(space-around);
+		@include align-items(flex-end);
+		
+		.hand {
+			text-align:center;
+			
+			.card-container {
+				position: relative;
+				
+				.card {
+					font-size: 3pt;
+				
+					&:nth-of-type(n+2) { position: absolute; }
+					
+					@for $i from 2 through 52 {
+						&:nth-of-type(#{$i}) { 
+							top: -0.03rem * ($i - 1);
+							left: 0.03rem * ($i - 1); 
+						}
+					}
+				}
+			}
+			
+			.out-of-cards {
+				color: #ff6464;
+				margin-bottom: 3rem;
+				font-size: 0.9rem;
+				font-style: italic;
+			}
+		}
+		
+		
+		&.debug .hand {
+			margin-bottom: 1rem;
+			text-align: left;
+			clear: both;
+			
+			.card {
+				display: inline-block;
+				font-size: 3pt;
+				
+				&:nth-of-type(n+2) { position: absolute; }
+				
+				@for $i from 2 through 52 {
+					&:nth-of-type(#{$i}) { left: 1rem * ($i - 1); }
+				}
+			}
+		}
+	}
+
+	#commands {
+		@include flex-shrink(1);
+		
+		@include flexbox;
+		@include flex-flow(row nowrap);
+		@include justify-content(space-between);
+		@include align-items(center);
+		
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		padding: 1rem 2rem;
+		background-color: #00290C;
+		border-style: solid;
+		border-color: #203C28;
+		border-width: 0.25rem 0;
+		text-align: right;
+		
+		@media (max-width: 600px) {
+			div.range {
+				display: none !important;
+			}
+		}
+		
+		&.play-again {
+			text-align: center;
+		}
+		
+		div.buttons {
+			@include flex-grow(1);
+		}
+		
+		input[type="range"] {
+			vertical-align: middle;
+			margin: 0 0.5rem;
+		}
+		
+		button {
+			margin: 0 0 1rem 2.5rem;
+		}
+		
+	}
+
+}
+
+#victory {
+	h2 {
+		margin: 0 0 4rem;
+	}
+}
+

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html ng-app="war-card-game">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WAR by Adam Alexander</title>
+
+		<link rel="stylesheet" type="text/css" href="css/application.css" />
+
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+
+		<script src="js/war.js"></script>
+  </head>
+  <body ng-controller="WarController as war">
+
+		<!-- card templates  -->
+		@@include('playingcards.html')
+		<script id="card-blank" type="text/ng-template">
+		  <div class="card-blank"></div>
+		</script>
+
+		<h1 id="warTitle">WAR!</h1>
+
+		<!-- Select number of players -->
+		<section id="playerCountSelection" ng-show="war.playerCount === 0">
+			<p class="instructions">How many players?</p>
+			<div id="playerCountOptions">
+				<button ng-repeat="playerCount in war.playerCountOptions" ng-bind="playerCount" ng-click="war.initWar(playerCount)"></button>
+			</div>
+		</section>
+
+		<!-- Main playing area -->
+		<main id="theater" ng-show="war.playerCount != 0">
+
+			<!-- Victory message (Game is over) -->
+			<section id="victory" ng-show="war.winningHandIndex > -1">
+				<h2>Player {{ war.winningHandIndex + 1 }} is the victor!</h2>
+			</section>
+
+			<!-- Every loses message -->
+			<section id="armageddon" ng-show="war.winningHandIndex === -99">
+				<h2>Mutually assured destruction! Nobody wins!</h2>
+			</section>
+
+			<!-- Regiments (cards in play)  -->
+			<section id="battlefield">
+				<div class="regiment" ng-repeat="regiment in war.regiments">
+					<div class="status">
+						<div ng-show="regiment.winner" class="winner">WINNER!</div>
+					</div>
+					<h3>Player {{ $index + 1 }}</h3>
+					<div class="card-container">
+						<div class="card" ng-repeat="card in regiment.cards" ng-init="suit = card.suit" ng-hide="card.faceValue === 'blank'" suit="{{ card.suit.name }}" face="{{ card.faceValue }}">
+							<div class="{{card.suit.name}}" ng-include src="($index % 3 === 0) ? card.template : 'card-back'"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- players' pile -->
+			<section id="hands">
+				<div class="hand" ng-repeat="hand in war.hands">
+					<div class="card-container">
+						<div class="card" ng-repeat="card in hand.getCards()" ng-init="suit = card.suit">
+							<div ng-include src="'card-back'"></div>
+						</div>
+					</div>
+					<div ng-show="hand.getCards().length === 0" class="out-of-cards">Out of Cards</div>
+
+					<p>Player {{ $index + 1 }}</p>
+
+					<!-- for debugging  -->
+					<!-- <div class="card" ng-repeat="card in hand.getCards()" ng-init="suit = card.suit">
+						<div class="{{card.suit.name}}" ng-include src="card.template"></div>
+					</div> -->
+				</div>
+			</section>
+
+			<!-- game actions (Play, Autoplay, Play Again) -->
+			<footer id="commands" ng-class="{ 'play-again': war.winningHandIndex != -1 }">
+				<div class="range" ng-show="war.autoplayEnabled">
+					Autoplay Rate
+					<input id="autoplay-range" type="range" ng-model="war.autoplayRateMs" min="250" max="2000" step="250" />
+					<span ng-bind="war.autoplayRateMs"></span> ms
+				</div>
+
+				<div class="buttons">
+					<button ng-click="war.toggleAutoplay()" ng-show="war.winningHandIndex == -1"><span ng-show="war.autoplayEnabled">Stop </span>Autoplay</button>
+					<button ng-click="war.battle()" ng-disabled="war.autoplayEnabled" ng-show="war.winningHandIndex == -1">Battle!</button>
+					<button ng-click="war.playAgain()" ng-show="war.winningHandIndex != -1">Play Again</button>
+				</div>
+			</footer>
+
+		</main>
+
+	</body>
+</html>
